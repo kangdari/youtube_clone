@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Typography, Button, Form, message, Input } from "antd";
 import Dropzone from "react-dropzone";
 import { PlusOutlined } from "@ant-design/icons";
+import axios from 'axios';
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -57,6 +58,27 @@ const VideoUploadPage = () => {
   const onCategoryChange = e => {
       setCategory(e.currentTarget.value);
   }
+  // video 
+  const onDrop = (files) => {
+    let formData = new FormData();
+    const config = {
+        //  content-type: 하나의 타입만 명시 할 수 있다.
+        // multipart/form-data: input, 동영상(이미지) 두 종류의 데이터를 함께 보내기 위한 설정
+        header: {'content-type': 'multipart/form-data'}
+    }
+    formData.append('file', files[0]);
+    // video/upload api 호출
+    axios.post('/api/video/upload', formData, config)
+        .then(response => {
+            // 전송 성공
+            if(response.data.success){
+              console.log(response.data);
+            }
+        }).catch(err => {
+          console.log(err);
+          alert(err);
+        })
+  };
 
   return (
     <Wrapper>
@@ -67,7 +89,8 @@ const VideoUploadPage = () => {
       <Form onSubmit>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           {/* Dropzone */}
-          <Dropzone onDrop multiple maxSize>
+          {/* mutiple: false: 파일 한 개, true: 여러 개 */}
+          <Dropzone onDrop={onDrop} multiple={false} maxSize={100000000}>
             {({ getRootProps, getInputProps }) => (
               <div
                 style={{

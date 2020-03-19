@@ -8,6 +8,8 @@ const cookieParser = require('cookie-parser');
 
 const { auth } = require('./middleware/auth');
 
+const videoRoute = require('./routes/video');
+
 const mongoose = require('mongoose');
 mongoose
   .connect(config.mongoURI, {
@@ -28,6 +30,9 @@ app.use(cookieParser());
 app.get('/', (req, res) => res.send('hello'));
 
 app.get('/api/hello', (req, res) => res.send('hello react'));
+
+// video
+app.use('/api/video', videoRoute);
 
 app.post('/api/users/register', async (req, res) => {
   const { name, email, password, lastname } = req.body;
@@ -107,5 +112,10 @@ app.get('/api/users/logout', auth, (req, res) => {
     return res.status(200).json({ success: true });
   });
 });
+
+
+app.post('/api/video/upload', (req, res) => {
+
+})
 
 app.listen(port, () => console.log(`listening on port ${port}`));
