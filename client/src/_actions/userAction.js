@@ -45,12 +45,21 @@ export const loginUser = (dataToSubmit) => async dispatch => {
     }
 };
 
-export const logout = () => async dispatch => {
-    dispatch({ type: LOGOUT });
-    try{
-        // logout api
-        await axios.get(`${USER_SERVER}/logout`);
-    }catch(err){
-        throw err;
+export async function logout() {
+    const request = await axios.get(`${USER_SERVER}/logout`);
+
+    return{
+        type: LOGOUT,
+        payload: request.data,
     }
 }
+
+// export const logout = () => async dispatch => {
+//     dispatch({ type: LOGOUT });
+//     try{
+//         // logout api
+//         await axios.get(`${USER_SERVER}/logout`);
+//     }catch(err){
+//         throw err;
+//     }
+// }

@@ -4,6 +4,7 @@ import { logout } from "../../../_actions/userAction";
 import Button from "../../Common/Button";
 import styled from "styled-components";
 import Responsive from "../../Common/Responsive";
+import { withRouter } from "react-router-dom";
 
 // fixed 안에 flex 적용
 const NavBarBlock = styled.div`
@@ -34,21 +35,26 @@ const Wrapper = styled(Responsive)`
   }
 `;
 
-const NavBar = () => {
+const NavBar = ({ history }) => {
   const dispatch = useDispatch();
   const { auth } = useSelector(state => ({
     auth: state.auth.auth
   }));
 
   const onLogout = () => {
-    dispatch(logout());
     // localStorage에서 auth 정보 삭제 > 새로고침 시 자동 로그인 안됨.
     localStorage.removeItem("auth");
+    dispatch(logout()).then(response => {
+      // 로그아웃 성공 시 홈으로 이동
+      if (response.payload.logoutSuccess) {
+        history.push("/");
+      }
+    });
   };
 
   const onVideoUpload = () => {
-    console.log('upload');
-  }
+    console.log("upload");
+  };
 
   return (
     <NavBarBlock>
@@ -61,7 +67,9 @@ const NavBar = () => {
         <div className="rightMenu">
           {auth.isAuth ? (
             <>
-              <Button to='/video/upload' onClick={onVideoUpload}>VideoUpload</Button>
+              <Button to="/video/upload" onClick={onVideoUpload}>
+                VideoUpload
+              </Button>
               <Button onClick={onLogout}>Logout</Button>
             </>
           ) : (
@@ -76,4 +84,4 @@ const NavBar = () => {
   );
 };
 
-export default NavBar;
+export default withRouter(NavBar);
