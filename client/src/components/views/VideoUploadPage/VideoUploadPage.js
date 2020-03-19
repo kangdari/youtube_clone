@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Typography, Button, Form, message, Input } from "antd";
 import Dropzone from "react-dropzone";
@@ -22,7 +22,42 @@ const Wrapper = styled.div`
   }
 `;
 
+const PrivateOptions = [
+  { value: 0, label: "Private" },
+  { value: 1, label: "Public" }
+];
+
+const categoryOptions = [
+  { value: 0, label: "Film & Animation" },
+  { value: 1, label: "Autos & Vehicles" },
+  { value: 2, label: "Music" },
+  { value: 3, label: "Pets & Animals" }
+];
+
 const VideoUploadPage = () => {
+  const [form, setForm] = useState({
+    videoTitle: "",
+    description: ""
+  });
+  const [Private, setPrivate] = useState(0); // public: 1, private: 0
+  const [category, setCategory] = useState("Film & Animation");
+  // input 상태 입력
+  const onChange = e => {
+    const { name, value } = e.currentTarget;
+    setForm({
+      ...form,
+      [name]: value
+    });
+  };
+
+  const onPrivateChange = e => {
+    setPrivate(e.currentTarget.value);
+  }
+
+  const onCategoryChange = e => {
+      setCategory(e.currentTarget.value);
+  }
+
   return (
     <Wrapper>
       <div className="title">
@@ -46,7 +81,7 @@ const VideoUploadPage = () => {
                 {...getRootProps()}
               >
                 <input {...getInputProps()} />
-                <PlusOutlined style={{ fontSize: '3rem' }} />
+                <PlusOutlined style={{ fontSize: "3rem" }} />
               </div>
             )}
           </Dropzone>
@@ -60,20 +95,28 @@ const VideoUploadPage = () => {
         <br />
         <br />
         <label>Title</label>
-        <Input onChage value />
+        <Input name="videoTitle" onChange={onChange} value={form.videoTitle} />
         <br />
         <br />
         <label>Description</label>
-        <TextArea onChage value />
+        <TextArea name="description" onChange={onChange} value={form.description} />
         <br />
         <br />
-        <select onChange>
-          <option key value></option>
+        <select onChange={onPrivateChange}>
+          {PrivateOptions.map((item, i) => (
+            <option key={i} value={item.value}>
+              {item.label}
+            </option>
+          ))}
         </select>
         <br />
         <br />
-        <select onChange>
-          <option key value></option>
+        <select onChange={onCategoryChange}>
+          {categoryOptions.map((item, i) => (
+            <option key={i} value={item.value}>
+              {item.label}
+            </option>
+          ))}
         </select>
         <br />
         <br />
