@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 const Schema = mongoose;
 
 const videoSchema = mongoose.Schema({
-    write: {
-        // User 모델의 모든 정보를 불러옴.
+    writer: {
+        // User 모델의 모든 정보를 불러옴. ObjectID = _id
         type: Schema.Types.ObjectId,
         ref: 'User',
     },

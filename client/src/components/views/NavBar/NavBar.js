@@ -8,7 +8,7 @@ import { withRouter } from "react-router-dom";
 
 // fixed 안에 flex 적용
 const NavBarBlock = styled.div`
-  position: fixed;
+  /* position: fixed; */
   width: 100%;
 `;
 
