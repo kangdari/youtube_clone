@@ -4,13 +4,19 @@ const path = require("path");
 const multer = require("multer");
 const fs = require("fs");
 // const { Video } = require('./models/Video');
+const ffmpeg = require("fluent-ffmpeg");
 
 const { auth } = require("../middleware/auth"); // toekn 체크
 
-// uploads 폴더가 없으면 생성
+// 폴더가 없으면 생성
 fs.readdir("uploads", err => {
   if (err) {
-    fs.mkdir("uploads");
+    fs.mkdirSync("uploads");
+  }
+});
+fs.readdir("uploads/thumbnails", err => {
+  if (err) {
+    fs.mkdirSync("uploads/thumbnails");
   }
 });
 
@@ -28,7 +34,7 @@ let storage = multer.diskStorage({
 // multerFilter 함수는 multe 안에 정의되어야한다.
 const multerFilter = (req, file, cb) => {
   const ext = path.extname(file.originalname);
-  // 동영상이 아닌 경우 에러 발생  
+  // 동영상이 아닌 경우 에러 발생
   if (ext !== ".mp4") {
     return cb(new Error("only mp4 is allwoed!"));
   }
@@ -53,6 +59,46 @@ router.post("/upload", (req, res) => {
       url: res.req.file.path, // 서버에 저장된 파일의 경로
       filename: res.req.file.filename // 서버에 저장된 파일의 이름
     });
+  });
+});
+
+router.post("/thumbnail", (req, res) => {
+  console.log(req.body.url);
+
+  let thumbnailPath = ''; // 영상 저장 경로
+  let fileDuration = ''; // 영상 시간
+
+  // 비디오 정보 가져오기
+  ffmpeg.ffprobe(req.body.url, (err, metadata) => {
+    fileDuration = metadata.format.duration;
+  })
+
+  // 썸네일 생성, 비디오 러닝 타임 가져오기
+  ffmpeg(req.body.url)
+    .on("filenames", filenames => {
+      console.log("Will generate " + filenames.join(", "));
+      console.log(filenames);
+      // thumnail 저장 주소
+      thumbnailPath = "uploads/thumbnails/" + filenames[0];
+    })
+    .on("end", () => {
+      console.log("Screenshots taken");
+      return res.json({
+        success: true,
+        thumbnailPath: thumbnailPath, // thumbnail 저장 경로 
+        fileDuration: fileDuration // 영상 시간
+      });
+    })
+    .on('error', (err) => {
+      console.log(err);
+      return res.json({ success: false, err});
+    })
+    .screenshots({
+      count: 3, // 갯수
+      folder: 'uploads/thumbnails',
+      size:'320x240',
+      // %b: input basename (입력한 파일 이름, 확장자 명 제외)
+      filename:'thumbnail-%b.png'
   });
 });
 

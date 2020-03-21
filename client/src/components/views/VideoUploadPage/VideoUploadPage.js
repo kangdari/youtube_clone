@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Typography, Button, Form, message, Input } from "antd";
 import Dropzone from "react-dropzone";
 import { PlusOutlined } from "@ant-design/icons";
-import axios from 'axios';
+import axios from "axios";
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -42,6 +42,10 @@ const VideoUploadPage = () => {
   });
   const [Private, setPrivate] = useState(0); // public: 1, private: 0
   const [category, setCategory] = useState("Film & Animation");
+  const [filePath, setFilePath] = useState("");
+  const [duration, setDuration] = useState("");
+  const [thumbnailPath, setThumbnailPath] = useState("");
+
   // input 상태 입력
   const onChange = e => {
     const { name, value } = e.currentTarget;
@@ -53,31 +57,52 @@ const VideoUploadPage = () => {
 
   const onPrivateChange = e => {
     setPrivate(e.currentTarget.value);
-  }
+  };
 
   const onCategoryChange = e => {
-      setCategory(e.currentTarget.value);
-  }
-  // video 
-  const onDrop = (files) => {
+    setCategory(e.currentTarget.value);
+  };
+  // video
+  const onDrop = files => {
     let formData = new FormData();
     const config = {
-        //  content-type: 하나의 타입만 명시 할 수 있다.
-        // multipart/form-data: input, 동영상(이미지) 두 종류의 데이터를 함께 보내기 위한 설정
-        header: {'content-type': 'multipart/form-data'}
-    }
-    formData.append('file', files[0]);
+      //  content-type: 하나의 타입만 명시 할 수 있다.
+      // multipart/form-data: input, 동영상(이미지) 두 종류의 데이터를 함께 보내기 위한 설정
+      header: { "content-type": "multipart/form-data" }
+    };
+    formData.append("file", files[0]);
     // video/upload api 호출
-    axios.post('/api/video/upload', formData, config)
-        .then(response => {
-            // 전송 성공
-            if(response.data.success){
-              console.log(response.data);
+    axios
+      .post("/api/video/upload", formData, config)
+      .then(response => {
+        // 전송 성공
+        if (response.data.success) {
+          // console.log(response.data);
+          let variable = {
+            url: response.data.url,
+            filename: response.data.filename
+          };
+          // 상태 저장
+          setFilePath(response.data.url);
+
+          // thumbnail 생성 api
+          axios.post("/api/video/thumbnail", variable).then(response => {
+            if (response.data.success) {
+              // console.log(response.data);
+              // 상태 저장 => 서버에서 보내준 값
+
+              setDuration(response.data.fileDuration);
+              setThumbnailPath(response.data.thumbnailPath);
+            } else {
+              alert("thumbnail error");
             }
-        }).catch(err => {
-          console.log(err);
-          alert(err);
-        })
+          });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        alert(err);
+      });
   };
 
   return (
@@ -109,10 +134,16 @@ const VideoUploadPage = () => {
             )}
           </Dropzone>
 
-          {/* thumbnail */}
-          <div>
-            <img src="" art="img" />
-          </div>
+          {/* thumbnailPath가 있을 경우 thumbnail 보여주기 */}
+          {thumbnailPath && (
+            <div>
+              <img
+                src={`http://localhost:5000/${thumbnailPath}`}  
+                art="thumbnail"
+              />
+            </div>
+          )}
+
         </div>
 
         <br />
@@ -122,7 +153,11 @@ const VideoUploadPage = () => {
         <br />
         <br />
         <label>Description</label>
-        <TextArea name="description" onChange={onChange} value={form.description} />
+        <TextArea
+          name="description"
+          onChange={onChange}
+          value={form.description}
+        />
         <br />
         <br />
         <select onChange={onPrivateChange}>
