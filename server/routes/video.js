@@ -3,9 +3,9 @@ const router = express.Router();
 const path = require("path");
 const multer = require("multer");
 const fs = require("fs");
-// const { Video } = require('./models/Video');
 const ffmpeg = require("fluent-ffmpeg");
 
+const { Video } = require('../models/Video'); // Video model
 const { auth } = require("../middleware/auth"); // toekn 체크
 
 // 폴더가 없으면 생성
@@ -101,5 +101,17 @@ router.post("/thumbnail", (req, res) => {
       filename:'thumbnail-%b.png'
   });
 });
+
+router.post('/uploadVideo', (req, res) => {
+  // req.body => onSubmit으로 클라이언트에서 넘겨준 데이터
+  // 비디오 정보들을 저장
+  const video = new Video(req.body);
+   video.save((err, doc) => {
+     if(err) {
+        return res.json({ success: false, err});
+     }
+     res.status(200).json({ success: true });
+   });
+})
 
 module.exports = router;

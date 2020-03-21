@@ -4,6 +4,8 @@ import { Typography, Button, Form, message, Input } from "antd";
 import Dropzone from "react-dropzone";
 import { PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
+import { withRouter } from 'react-router-dom';
+import { useSelector } from "react-redux";
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -35,16 +37,20 @@ const categoryOptions = [
   { value: 3, label: "Pets & Animals" }
 ];
 
-const VideoUploadPage = () => {
+const VideoUploadPage = ({ history }) => {
   const [form, setForm] = useState({
     videoTitle: "",
     description: ""
   });
+  const { videoTitle, description } = form;
   const [Private, setPrivate] = useState(0); // public: 1, private: 0
   const [category, setCategory] = useState("Film & Animation");
   const [filePath, setFilePath] = useState("");
   const [duration, setDuration] = useState("");
   const [thumbnailPath, setThumbnailPath] = useState("");
+  const { auth } = useSelector(state => ({
+    auth: state.auth.auth
+  }));
 
   // input 상태 입력
   const onChange = e => {
@@ -62,6 +68,7 @@ const VideoUploadPage = () => {
   const onCategoryChange = e => {
     setCategory(e.currentTarget.value);
   };
+
   // video
   const onDrop = files => {
     let formData = new FormData();
@@ -105,13 +112,40 @@ const VideoUploadPage = () => {
       });
   };
 
+  const onSubmit = e => {
+    e.preventDefault();
+
+    let variable = {
+      writer: auth._id, // 로그인 유저의 id
+      title: videoTitle,
+      description: description,
+      privacy: Private,
+      filePath: filePath,
+      duration: duration,
+      category: category,
+      thumbnail: thumbnailPath
+    };
+    // db에 video 정보 저장
+    axios.post("/api/video/uploadVideo", variable).then(response => {
+      if (response.data.success) {
+        message.success('success upload!!');
+        setTimeout(() => {
+          // 2초 뒤 홈을 이동
+          history.push('/'); 
+        }, (2000));
+      } else {
+        alert("failed upload Video");
+      }
+    });
+  };
+
   return (
     <Wrapper>
       <div className="title">
         <Title>Upload Page</Title>
       </div>
 
-      <Form onSubmit>
+      <Form onSubmit={onSubmit}>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           {/* Dropzone */}
           {/* mutiple: false: 파일 한 개, true: 여러 개 */}
@@ -135,15 +169,15 @@ const VideoUploadPage = () => {
           </Dropzone>
 
           {/* thumbnailPath가 있을 경우 thumbnail 보여주기 */}
-          {thumbnailPath && (
-            <div>
-              <img
-                src={`http://localhost:5000/${thumbnailPath}`}  
-                art="thumbnail"
-              />
-            </div>
-          )}
-
+          {thumbnailPath &&
+            (
+              <div>
+                <img
+                  src={`http://localhost:5000/${thumbnailPath}`}
+                  alt="thumbnail"
+                />
+              </div>
+            )}
         </div>
 
         <br />
@@ -178,7 +212,7 @@ const VideoUploadPage = () => {
         </select>
         <br />
         <br />
-        <Button type="primary" size="large" onClick>
+        <Button type="primary" size="large" onClick={onSubmit}>
           Submit
         </Button>
       </Form>
@@ -186,4 +220,4 @@ const VideoUploadPage = () => {
   );
 };
 
-export default VideoUploadPage;
+export default withRouter(VideoUploadPage);
