@@ -77,7 +77,7 @@ router.post("/thumbnail", (req, res) => {
   ffmpeg(req.body.url)
     .on("filenames", filenames => {
       console.log("Will generate " + filenames.join(", "));
-      console.log(filenames);
+      // console.log(filenames);
       // thumnail 저장 주소
       thumbnailPath = "uploads/thumbnails/" + filenames[0];
     })
@@ -125,6 +125,18 @@ router.get("/getVideos", (req, res) => {
       }
       res.status(200).json({ success: true, videos });
     });
+});
+// _id로 video의 상세 정보
+router.post('/getVideoDetail', (req, res) => {
+  // console.log(req.body.videoId);
+  Video.findOne({ "_id" : req.body.videoId})
+    .populate('writer') // ObjectID가 속해있는 모델의 정보를 모두 가져옴.
+    .exec((err, videoDetail) => {
+      if(err) {
+        return res.status(400).json({ success: false, errr });
+      }
+      return res.status(200).json({ success: true, videoDetail });
+    })
 });
 
 module.exports = router;
