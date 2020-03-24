@@ -41,13 +41,49 @@ const Subscribe = ({ userTo }) => {
   // console.log(auth._id)
 
   // DB update
-  const onSubscribe = e => {};
+  const onSubscribe = () => {
+    let subscribeVariable = {
+      userTo, // video 작성자의 id
+      userFrom: auth._id // 현재 user의 id
+    }
+    // 비로그인 상태일 때 구독 버튼 못 누름
+    if (!auth._id) {
+      // 추후에 모달창을 띄우는 방식으로 변경
+      return alert('로그인 하세요');
+    }
+
+    // 로그인 상태일 때만 구독 버튼 클릭 가능...
+    // 이미 구독 중일 때 클릭하면 구독 취소...
+    if (subscribed) {
+      axios.post('/api/subscribe/unSubscribe', subscribeVariable)
+        .then(response => {
+          if (response.data.success) {
+            setSubscribeNumber(subscribeNumber - 1); // 구독 1명 감소(상태 수정)
+            setSubscribed(false); // subscribe btn 텍스트 변화(상태 수정)
+          } else {
+            alert('구독 취소 실패');
+          }
+        })
+
+      // 구독 중이 아닐때 클릭하면 구독...
+    } else {
+      axios.post('/api/subscribe/subscribe', subscribeVariable)
+        .then(response => {
+          if (response.data.success) {
+            setSubscribeNumber(subscribeNumber + 1); // 구독 1명 감소(상태 수정)
+            setSubscribed(true); // subscribe btn 텍스트 변화(상태 수정)
+          } else {
+            alert('구독하기 실패');
+          }
+        })
+    }
+  };
 
   useEffect(() => {
     // 해당 비디오를 업로드한 유저를 구독하는 유저의 수...
     axios.post("/api/subscribe/subscribeNumber", variable).then(response => {
       if (response.data.success) {
-        console.log(response.data);
+        console.log(`전체 구독 유저 ${response.data.subscribeNumber}`);
         setSubscribeNumber(response.data.subscribeNumber);
       } else {
         alert("구독자 수 정보를 받아 오지 못함.");
@@ -59,7 +95,7 @@ const Subscribe = ({ userTo }) => {
       .post("/api/subscribe/subscribed", subscribedVariable)
       .then(response => {
         if (response.data.success) {
-          console.log(response.data);
+          console.log(`현재 user 구독 여부: ${response.data.subscribed}`);
           setSubscribed(response.data.subscribed);
         } else {
           alert("구독 정보를 받아오지 못함.");

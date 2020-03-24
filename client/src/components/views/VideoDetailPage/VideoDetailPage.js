@@ -7,10 +7,12 @@ import Subscribe from './Subscribe';
 const VideoDetailPage = ({ match }) => {
   const [videoDetail, setVideoDetail] = useState([]);
 
-  const videoId = match.params.videoID;
-  const variable = { videoId: videoId };
 
   useEffect(() => {
+    // 파라미터 읽기
+    const videoId = match.params.videoID;
+    const variable = { videoId };
+  
     axios.post("/api/video/getVideoDetail", variable).then(response => {
       if (response.data.success) {
         // console.log(response.data);
@@ -19,7 +21,7 @@ const VideoDetailPage = ({ match }) => {
         alert("Failed load videoInfo");
       }
     });
-  }, []);
+  }, [match.params.videoID]);
 
   // videoDetail.writer 로딩 여부에 따라 렌더링을 다르게 설정
   if (videoDetail.writer) {
