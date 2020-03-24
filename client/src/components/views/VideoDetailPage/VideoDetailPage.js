@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Row, Col, List, Avatar } from "antd";
 import axios from "axios";
 import SideVideo from './SideVideo';
+import Subscribe from './Subscribe';
 
 const VideoDetailPage = ({ match }) => {
   const [videoDetail, setVideoDetail] = useState([]);
@@ -35,7 +36,7 @@ const VideoDetailPage = ({ match }) => {
             {/* user 정보 */}
             <List.Item
               // 좋아요 싫어요
-              actions
+              actions={[<Subscribe />]}
             >
               <List.Item.Meta
                 // writer.image 필요
