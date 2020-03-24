@@ -12,7 +12,6 @@ export default function(SpecificComponent, option, adminRoute = null) {
 
     useEffect(() => {
       dispatch(authCheck()).then(response => {
-        // console.log(response);
         // 비 로그인 상태
         if (!response.payload.isAuth) {
           if (option) {
@@ -26,8 +25,7 @@ export default function(SpecificComponent, option, adminRoute = null) {
             props.history.push("/");
           } else {
             // 일반 유저
-            if (!option) {
-              // false
+            if (option === false) {
               props.history.push("/");
             }
           }

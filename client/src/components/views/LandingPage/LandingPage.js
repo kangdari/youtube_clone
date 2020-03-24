@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
-import { Card, Icon, Avatar, Col, Typography, Row } from "antd";
+import { Card, Avatar, Col, Typography, Row } from "antd";
 import { Link } from "react-router-dom";
 import palette from "../../../utils/palette";
 import moment from "moment";
@@ -64,6 +64,7 @@ const LandingPage = () => {
     return (
       <Col key={i} xl={6} lg={8} md={12} xs={24}>
         <CardBlock>
+          {/* videoDetailPage로 연결 */}
           <Link to={`/video/${video._id}`}>
             <img alt="thumbnail" src={`http://localhost:5000/${video.thumbnail}`}  />
             <div className="duration">
@@ -77,7 +78,7 @@ const LandingPage = () => {
         <Meta
           avatar={<Avatar src={video.writer.image} />}
           title={video.title}
-          description=""
+          description
         />
         <span>{video.writer.name} </span>
         <br />
@@ -90,7 +91,7 @@ const LandingPage = () => {
   return (
     <LandingPageBlock>
       <div style={{ width: "85%", margin: "3rem auto" }}>
-        <Title level={2}> Recomanded </Title>
+        <Title level={2}> Recommended </Title>
         <hr />
         {/* gutter: 양쪽 padding 합 ? */}
         <Row gutter={[32, 16]}>{renderCards}</Row>
