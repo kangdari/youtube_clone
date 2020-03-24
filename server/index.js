@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 
 const videoRoute = require('./routes/video');
 const userRoute = require('./routes/users');
+const subscribeRoute = require('./routes/subscribe');
 
 const mongoose = require('mongoose');
 mongoose
@@ -34,5 +35,7 @@ app.get('/api/hello', (req, res) => res.send('hello react'));
 app.use('/api/video', videoRoute);
 // user
 app.use('/api/users', userRoute);
+// subscribe
+app.use('.api/subscribe', subscribeRoute);
 
 app.listen(port, () => console.log(`listening on port ${port}`));

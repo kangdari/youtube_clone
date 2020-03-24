@@ -36,7 +36,7 @@ const VideoDetailPage = ({ match }) => {
             {/* user 정보 */}
             <List.Item
               // 좋아요 싫어요
-              actions={[<Subscribe />]}
+              actions={[<Subscribe userTo={videoDetail.writer._id} />]}
             >
               <List.Item.Meta
                 // writer.image 필요
