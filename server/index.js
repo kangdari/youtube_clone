@@ -36,6 +36,6 @@ app.use('/api/video', videoRoute);
 // user
 app.use('/api/users', userRoute);
 // subscribe
-app.use('.api/subscribe', subscribeRoute);
+app.use('/api/subscribe', subscribeRoute);
 
 app.listen(port, () => console.log(`listening on port ${port}`));

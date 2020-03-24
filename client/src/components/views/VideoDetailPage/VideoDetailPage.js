@@ -36,12 +36,13 @@ const VideoDetailPage = ({ match }) => {
             {/* user 정보 */}
             <List.Item
               // 좋아요 싫어요
+              // userTo: 해당 비디오 작성자의 id 값을 props로 전달
               actions={[<Subscribe userTo={videoDetail.writer._id} />]}
             >
               <List.Item.Meta
                 // writer.image 필요
                 avatar={<Avatar src={videoDetail.writer.image} />}
-                title={videoDetail.writer.name} // user name
+                title={videoDetail.writer.name} // us er name
                 description={videoDetail.description}
               />
             </List.Item>
