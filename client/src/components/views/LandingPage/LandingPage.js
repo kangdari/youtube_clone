@@ -91,7 +91,7 @@ const LandingPage = () => {
   return (
     <LandingPageBlock>
       <div style={{ width: "85%", margin: "3rem auto" }}>
-        <Title level={2}> Recomanded </Title>
+        <Title level={2}> Recommended </Title>
         <hr />
         {/* gutter: 양쪽 padding 합 ? */}
         <Row gutter={[32, 16]}>{renderCards}</Row>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Row, Col, List, Avatar } from "antd";
 import axios from "axios";
+import SideVideo from './SideVideo';
 
 const VideoDetailPage = ({ match }) => {
   const [videoDetail, setVideoDetail] = useState([]);
@@ -11,13 +12,14 @@ const VideoDetailPage = ({ match }) => {
   useEffect(() => {
     axios.post("/api/video/getVideoDetail", variable).then(response => {
       if (response.data.success) {
-        console.log(response.data);
+        // console.log(response.data);
         setVideoDetail(response.data.videoDetail);
       } else {
         alert("Failed load videoInfo");
       }
     });
   }, []);
+
   // videoDetail.writer 로딩 여부에 따라 렌더링을 다르게 설정
   if (videoDetail.writer) {
     return (
@@ -25,7 +27,7 @@ const VideoDetailPage = ({ match }) => {
         <Col lg={18} xs={24}>
           <div style={{ width: "100%", padding: "3rem 4rem" }}>
             <video
-              style={{ width: "100%", height: "800px" }}
+              style={{ width: "100%" }}
               src={`http://localhost:5000/${videoDetail.filePath}`}
               controls
             />
@@ -47,7 +49,7 @@ const VideoDetailPage = ({ match }) => {
           </div>
         </Col>
         <Col lg={6} xs={24}>
-          Side VideoList
+          <SideVideo />
         </Col>
       </Row>
     );
