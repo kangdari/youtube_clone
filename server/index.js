@@ -24,6 +24,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // application/json
 app.use(bodyParser.json());
 app.use(cookieParser());
+// static 파일 사용
+app.use('/uploads', express.static('uploads'));
 
 app.get('/', (req, res) => res.send('hello'));
 app.get('/api/hello', (req, res) => res.send('hello react'));
@@ -34,5 +36,3 @@ app.use('/api/video', videoRoute);
 app.use('/api/users', userRoute);
 
 app.listen(port, () => console.log(`listening on port ${port}`));
-
-

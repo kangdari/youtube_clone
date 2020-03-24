@@ -6,8 +6,6 @@ import { Link } from "react-router-dom";
 import palette from "../../../utils/palette";
 import moment from "moment";
 
-import img from "../../../img.png";
-
 const { Title } = Typography;
 const { Meta } = Card;
 
@@ -67,7 +65,7 @@ const LandingPage = () => {
       <Col key={i} xl={6} lg={8} md={12} xs={24}>
         <CardBlock>
           <Link to={`/video/${video._id}`}>
-            <img alt="thumbnail" src={img} />
+            <img alt="thumbnail" src={`http://localhost:5000/${video.thumbnail}`}  />
             <div className="duration">
               <span>
                 {minutes} : {seconds}

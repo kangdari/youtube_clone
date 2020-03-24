@@ -63,7 +63,7 @@ router.post("/upload", (req, res) => {
 });
 
 router.post("/thumbnail", (req, res) => {
-  console.log(req.body.url);
+  // console.log(req.body.url);
 
   let thumbnailPath = ""; // 영상 저장 경로
   let fileDuration = ""; // 영상 시간
