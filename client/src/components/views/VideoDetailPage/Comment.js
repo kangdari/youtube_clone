@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import SingleComment from "./SingleComment";
+import ReplyComment from './ReplyComment';
 
 const Comment = ({ comments, videoId, refreshComments }) => {
   const [commentValue, setCommentValue] = useState("");
@@ -45,18 +46,27 @@ const Comment = ({ comments, videoId, refreshComments }) => {
       <hr />
       <br />
       {/* comment list */}
+      {/* comments: 모든 댓글 */}
       {comments &&
         comments.map(
           (comment, i) =>
             // responseTo가 없는 comment만 출력 == depth가 없는 comment만 출력
             !comment.responseTo && (
-              <SingleComment
-                key={i}
-                videoId={videoId}
-                writer={auth._id}
-                comment={comment}
-                refreshComments={refreshComments}
-              />
+              <>
+                {/* root comments */}
+                <SingleComment
+                  videoId={videoId}
+                  comment={comment}
+                  refreshComments={refreshComments}
+                />
+                {/* child comments */}
+                <ReplyComment 
+                  videoId={videoId}
+                  comments={comments} 
+                  parentCommentId={comment._id}
+                  refreshComments={refreshComments}
+                  />
+              </>
             )
         )}
       {/* root comment form */}
