@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import SingleComment from "./SingleComment";
 
-const Comment = ({ videoId }) => {
+const Comment = ({ comments, videoId }) => {
   const [commentValue, setCommentValue] = useState("");
   const { auth } = useSelector(state => ({
     auth: state.auth.auth
@@ -20,7 +20,7 @@ const Comment = ({ videoId }) => {
       content: commentValue,
       // writer: JSON.parse(localStorage.getItem('auth'))._id, // local 저장소에서 가져온 id 값
       writer: auth._id, // redux store에서 가져온 id 값
-      postId: videoId
+      videoId
     };
 
     // comment 저장 api
@@ -39,12 +39,20 @@ const Comment = ({ videoId }) => {
       Replies
       <hr />
       <br />
-
-
       {/* comment list */}
-      <SingleComment />
-
-
+      {comments &&
+        comments.map(
+          (comment, i) =>
+            // responseTo가 없는 comment만 출력 == depth가 없는 comment만 출력
+            !comment.responseTo && (
+              <SingleComment
+                key={i}
+                videoId={videoId}
+                writer={auth._id}
+                comment={comment}
+              />
+            )
+        )}
       {/* root comment form */}
       <form style={{ display: "flex" }} onSubmit={handleSubmit}>
         <textarea

@@ -3,10 +3,10 @@ const router = express.Router();
 const { Comment } = require("../models/Comment");
 
 router.post("/saveComment", (req, res) => {
-  const { content, postId, writer } = req.body;
+  const { content, videoId, writer, responseTo } = req.body;
 
   // 인스턴스 생성
-  const comment = new Comment({ content, postId, writer });
+  const comment = new Comment({ content, videoId, writer, responseTo });
   // DB에 저장
   comment.save((err, comment) => {
     if (err) {
@@ -23,6 +23,17 @@ router.post("/saveComment", (req, res) => {
         return res.status(200).json({ success: true, comment });
       });
   });
+});
+
+router.post("/getComments", (req, res) => {
+  const { videoId } = req.body;
+  // 해당 video의 모든 comment들을 검색
+  Comment.find({ videoId })
+    .populate("writer")
+    .exec((err, comments) => {
+      if (err) return res.status(400).json({ success: false, err });
+      return res.status(200).json({ success: true, comments });
+    });
 });
 
 module.exports = router;

@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Row, Col, List, Avatar } from "antd";
 import axios from "axios";
-import SideVideo from './SideVideo';
-import Subscribe from './Subscribe';
-import Comment from './Comment';
+import SideVideo from "./SideVideo";
+import Subscribe from "./Subscribe";
+import Comment from "./Comment";
 
 const VideoDetailPage = ({ match }) => {
   const [videoDetail, setVideoDetail] = useState([]);
+  const [comments, setComments] = useState([]);
   const videoId = match.params.videoID;
 
   useEffect(() => {
     // 파라미터 읽기
     const variable = { videoId };
-  
+
     axios.post("/api/video/getVideoDetail", variable).then(response => {
       if (response.data.success) {
         // console.log(response.data);
@@ -21,6 +22,16 @@ const VideoDetailPage = ({ match }) => {
         alert("Failed load videoInfo");
       }
     });
+    // 모든 commetn의 정보들을 DB에서 불러오기, 인자 값은 해당 video의 id
+    axios.post("/api/comment/getComments", variable).then(response => {
+      if (response.data.success) {
+        setComments(response.data.comments);
+        console.log(response.data.comments);
+      } else {
+        alert("Failed load Comments");
+      }
+    });
+
   }, [videoId]);
 
   // videoDetail.writer 로딩 여부에 따라 렌더링을 다르게 설정
@@ -50,8 +61,7 @@ const VideoDetailPage = ({ match }) => {
             </List.Item>
 
             {/* 댓글  */}
-            <Comment videoId={videoId}/>
-
+            <Comment videoId={videoId} comments={comments}/>
           </div>
         </Col>
         <Col lg={6} xs={24}>
