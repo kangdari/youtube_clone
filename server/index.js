@@ -8,6 +8,7 @@ const cookieParser = require('cookie-parser');
 const videoRoute = require('./routes/video');
 const userRoute = require('./routes/users');
 const subscribeRoute = require('./routes/subscribe');
+const commetRoute = require('./routes/comment');
 
 const mongoose = require('mongoose');
 mongoose
@@ -37,5 +38,7 @@ app.use('/api/video', videoRoute);
 app.use('/api/users', userRoute);
 // subscribe
 app.use('/api/subscribe', subscribeRoute);
+// comment
+app.use('/api/comment', commetRoute);
 
 app.listen(port, () => console.log(`listening on port ${port}`));
