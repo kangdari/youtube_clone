@@ -2,14 +2,17 @@ import React, { useEffect, useState } from "react";
 import { Row, Col, List, Avatar } from "antd";
 import axios from "axios";
 import SideVideo from './SideVideo';
+import Subscribe from './Subscribe';
 
 const VideoDetailPage = ({ match }) => {
   const [videoDetail, setVideoDetail] = useState([]);
 
-  const videoId = match.params.videoID;
-  const variable = { videoId: videoId };
 
   useEffect(() => {
+    // 파라미터 읽기
+    const videoId = match.params.videoID;
+    const variable = { videoId };
+  
     axios.post("/api/video/getVideoDetail", variable).then(response => {
       if (response.data.success) {
         // console.log(response.data);
@@ -18,7 +21,7 @@ const VideoDetailPage = ({ match }) => {
         alert("Failed load videoInfo");
       }
     });
-  }, []);
+  }, [match.params.videoID]);
 
   // videoDetail.writer 로딩 여부에 따라 렌더링을 다르게 설정
   if (videoDetail.writer) {
@@ -35,12 +38,13 @@ const VideoDetailPage = ({ match }) => {
             {/* user 정보 */}
             <List.Item
               // 좋아요 싫어요
-              actions
+              // userTo: 해당 비디오 작성자의 id 값을 props로 전달
+              actions={[<Subscribe userTo={videoDetail.writer._id} />]}
             >
               <List.Item.Meta
                 // writer.image 필요
                 avatar={<Avatar src={videoDetail.writer.image} />}
-                title={videoDetail.writer.name} // user name
+                title={videoDetail.writer.name} // us er name
                 description={videoDetail.description}
               />
             </List.Item>
