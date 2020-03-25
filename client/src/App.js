@@ -6,6 +6,7 @@ import RegisterContainer from './container/RegisterContainer';
 import NavBar from "./components/views/NavBar/NavBar";
 import VideoUploadPage from './components/views/VideoUploadPage/VideoUploadPage';
 import VideoDetailPage from './components/views/VideoDetailPage/VideoDetailPage';
+import SubscriptionPage from './components/views/SubscriptionPage/SubscriptionPage';
 
 import Auth from './hoc/auth';
 
@@ -20,6 +21,7 @@ function App() {
         <Route path="/register" component={Auth(RegisterContainer, false)} />
         <Route path="/video/upload" component={Auth(VideoUploadPage, true)} />
         <Route path="/video/:videoID" component={Auth(VideoDetailPage, null)} />
+        <Route path="/subscription" component={Auth(SubscriptionPage, null)} />
       </Switch>
     </>
   );

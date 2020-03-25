@@ -62,7 +62,7 @@ const NavBar = ({ history }) => {
         <h2 className="logo">Logo</h2>
         <div className="leftMenu">
           <Button to="/">Home</Button>
-          <Button to="/sub">Sub</Button>
+          <Button to="/subscription">Sub</Button>
         </div>
         <div className="rightMenu">
           {auth.isAuth ? (

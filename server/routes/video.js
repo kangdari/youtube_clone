@@ -6,6 +6,7 @@ const fs = require("fs");
 const ffmpeg = require("fluent-ffmpeg");
 
 const { Video } = require("../models/Video"); // Video model
+const { Subscriber } = require("../models/Subscriber");
 const { auth } = require("../middleware/auth"); // toekn 체크
 
 // 폴더가 없으면 생성
@@ -127,16 +128,40 @@ router.get("/getVideos", (req, res) => {
     });
 });
 // _id로 video의 상세 정보
-router.post('/getVideoDetail', (req, res) => {
+router.post("/getVideoDetail", (req, res) => {
   // console.log(req.body.videoId);
-  Video.findOne({ "_id" : req.body.videoId})
-    .populate('writer') // ObjectID가 속해있는 모델의 정보를 모두 가져옴.
+  Video.findOne({ _id: req.body.videoId })
+    .populate("writer") // ObjectID가 속해있는 모델의 정보를 모두 가져옴.
     .exec((err, videoDetail) => {
-      if(err) {
+      if (err) {
         return res.status(400).json({ success: false, errr });
       }
       return res.status(200).json({ success: true, videoDetail });
+    });
+});
+
+router.post("/subscriptionVideos", (req, res) => {
+  const { userFrom } = req.body;
+
+  // 로그인 user의 id를 가지고 구독한 user들을 검색
+  Subscriber.find({ userFrom }).exec((err, subscribersInfo) => {
+    if (err) {
+      return res.status(400).json({ err });
+    }
+    // 구독한 user들의 id
+    let subscribers = subscribersInfo.map(subscriber => subscriber.userTo);
+
+    // $in : 주어진 배열 안에 속하는 모든 값
+    // subscribers 배열안의 모든 id에 해당하는 writer들을 검색
+    Video.find({ writer: { $in: subscribers } })
+    .populate('writer')
+    .exec((err, videos) => {
+      if(err){
+        return res.status(400).json({ err });
+      }
+      return res.status(200).json({ success: true, videos });
     })
+  });
 });
 
 module.exports = router;
