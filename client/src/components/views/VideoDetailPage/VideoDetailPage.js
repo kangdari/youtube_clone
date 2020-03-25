@@ -3,14 +3,14 @@ import { Row, Col, List, Avatar } from "antd";
 import axios from "axios";
 import SideVideo from './SideVideo';
 import Subscribe from './Subscribe';
+import Comment from './Comment';
 
 const VideoDetailPage = ({ match }) => {
   const [videoDetail, setVideoDetail] = useState([]);
-
+  const videoId = match.params.videoID;
 
   useEffect(() => {
     // 파라미터 읽기
-    const videoId = match.params.videoID;
     const variable = { videoId };
   
     axios.post("/api/video/getVideoDetail", variable).then(response => {
@@ -21,7 +21,7 @@ const VideoDetailPage = ({ match }) => {
         alert("Failed load videoInfo");
       }
     });
-  }, [match.params.videoID]);
+  }, [videoId]);
 
   // videoDetail.writer 로딩 여부에 따라 렌더링을 다르게 설정
   if (videoDetail.writer) {
@@ -49,7 +49,9 @@ const VideoDetailPage = ({ match }) => {
               />
             </List.Item>
 
-            {/* comments */}
+            {/* 댓글  */}
+            <Comment videoId={videoId}/>
+
           </div>
         </Col>
         <Col lg={6} xs={24}>
