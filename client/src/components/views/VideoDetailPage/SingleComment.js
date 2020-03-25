@@ -4,7 +4,7 @@ import axios from "axios";
 
 const { TextArea } = Input;
 
-const SingleComment = ({ videoId, writer, comment }) => {
+const SingleComment = ({ videoId, writer, comment, refreshComments }) => {
   const [visible, setVisible] = useState(false);
   const [commentValue, setCommentValue] = useState("");
 
@@ -31,7 +31,11 @@ const SingleComment = ({ videoId, writer, comment }) => {
     // comment 저장 api
     axios.post("/api/comment/saveComment", variables).then(response => {
       if (response.data.success) {
-        console.log(response.data.comment);
+        // console.log(response.data.comment);
+        
+        // 전체 comments 상태 업데이트
+        refreshComments(response.data.comment);
+        setCommentValue('');
       } else {
         alert("Failed save comment");
       }
@@ -49,7 +53,7 @@ const SingleComment = ({ videoId, writer, comment }) => {
       <Comment
         actions={actions}
         author={comment.writer.name}
-        content={comment.content}
+        content={<p>{comment.content}</p>}
         avatar={<Avatar src={comment.writer.image} alt="user-img" />}
       />
 

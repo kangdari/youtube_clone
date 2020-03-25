@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import SingleComment from "./SingleComment";
 
-const Comment = ({ comments, videoId }) => {
+const Comment = ({ comments, videoId, refreshComments }) => {
   const [commentValue, setCommentValue] = useState("");
   const { auth } = useSelector(state => ({
     auth: state.auth.auth
@@ -23,10 +23,15 @@ const Comment = ({ comments, videoId }) => {
       videoId
     };
 
-    // comment 저장 api
+    // comment 저장 api, 입력한 댓글을 DB에 저장
     axios.post("/api/comment/saveComment", variables).then(response => {
       if (response.data.success) {
-        console.log(response.data.comment);
+        // console.log(response.data.comment);
+
+        // VideoDetailPage의 comments 상태를 업그레이드 해주는 함수 호출
+        // DB에 저장한 comment를 기존 commets와 연결
+        refreshComments(response.data.comment);
+        setCommentValue("");
       } else {
         alert("Failed save comment");
       }
@@ -50,6 +55,7 @@ const Comment = ({ comments, videoId }) => {
                 videoId={videoId}
                 writer={auth._id}
                 comment={comment}
+                refreshComments={refreshComments}
               />
             )
         )}

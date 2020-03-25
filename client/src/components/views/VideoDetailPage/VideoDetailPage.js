@@ -4,11 +4,15 @@ import axios from "axios";
 import SideVideo from "./SideVideo";
 import Subscribe from "./Subscribe";
 import Comment from "./Comment";
+import { useSelector } from 'react-redux';
 
 const VideoDetailPage = ({ match }) => {
   const [videoDetail, setVideoDetail] = useState([]);
   const [comments, setComments] = useState([]);
   const videoId = match.params.videoID;
+  const { auth } = useSelector(state => ({
+    auth: state.auth.auth,
+  }))
 
   useEffect(() => {
     // 파라미터 읽기
@@ -26,16 +30,25 @@ const VideoDetailPage = ({ match }) => {
     axios.post("/api/comment/getComments", variable).then(response => {
       if (response.data.success) {
         setComments(response.data.comments);
+        console.log(`전체 댓글`);
         console.log(response.data.comments);
       } else {
         alert("Failed load Comments");
       }
     });
-
   }, [videoId]);
+
+  const refreshComments = (newComment) => {
+    // 기존 comments에 새로 입력된 comment를 연결
+    setComments(comments.concat(newComment));
+  };
 
   // videoDetail.writer 로딩 여부에 따라 렌더링을 다르게 설정
   if (videoDetail.writer) {
+    // 로그인 user가 자신이 업로드한 video는 구독하지 못하도록 설정
+    // 즉, 현재 로그인 user id와 video 게시자의 id가 같지 않을때 구독 버튼이 보이도록 설정
+    const subscribeButton = videoDetail.writer._id !== auth._id && <Subscribe userTo={videoDetail.writer._id} />
+
     return (
       <Row gutter={[16, 16]}>
         <Col lg={18} xs={24}>
@@ -50,7 +63,7 @@ const VideoDetailPage = ({ match }) => {
             <List.Item
               // 좋아요 싫어요
               // userTo: 해당 비디오 작성자의 id 값을 props로 전달
-              actions={[<Subscribe userTo={videoDetail.writer._id} />]}
+              actions={[subscribeButton]}
             >
               <List.Item.Meta
                 // writer.image 필요
@@ -61,7 +74,7 @@ const VideoDetailPage = ({ match }) => {
             </List.Item>
 
             {/* 댓글  */}
-            <Comment videoId={videoId} comments={comments}/>
+            <Comment videoId={videoId} comments={comments} refreshComments={refreshComments}/>
           </div>
         </Col>
         <Col lg={6} xs={24}>
