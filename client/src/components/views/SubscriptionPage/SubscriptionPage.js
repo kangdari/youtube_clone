@@ -5,7 +5,6 @@ import { Card, Avatar, Col, Typography, Row } from "antd";
 import { Link } from "react-router-dom";
 import palette from "../../../utils/palette";
 import moment from "moment";
-import { json } from "body-parser";
 
 const { Title } = Typography;
 const { Meta } = Card;
