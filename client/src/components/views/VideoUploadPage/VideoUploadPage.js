@@ -4,7 +4,7 @@ import { Typography, Button, Form, message, Input } from "antd";
 import Dropzone from "react-dropzone";
 import { PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
-import { withRouter } from 'react-router-dom';
+import { withRouter } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const { Title } = Typography;
@@ -128,11 +128,11 @@ const VideoUploadPage = ({ history }) => {
     // db에 video 정보 저장
     axios.post("/api/video/uploadVideo", variable).then(response => {
       if (response.data.success) {
-        message.success('success upload!!');
+        message.success("success upload!!");
         setTimeout(() => {
           // 2초 뒤 홈을 이동
-          history.push('/'); 
-        }, (2000));
+          history.push("/");
+        }, 2000);
       } else {
         alert("failed upload Video");
       }
@@ -169,15 +169,14 @@ const VideoUploadPage = ({ history }) => {
           </Dropzone>
 
           {/* thumbnailPath가 있을 경우 thumbnail 보여주기 */}
-          {thumbnailPath &&
-            (
-              <div>
-                <img
-                  src={`http://localhost:5000/${thumbnailPath}`}
-                  alt="thumbnail"
-                />
-              </div>
-            )}
+          {thumbnailPath && (
+            <div>
+              <img
+                src={`http://localhost:5000/${thumbnailPath}`}
+                alt="thumbnail"
+              />
+            </div>
+          )}
         </div>
 
         <br />

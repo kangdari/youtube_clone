@@ -70,7 +70,7 @@ const Comment = ({ comments, videoId, refreshComments }) => {
             )
         )}
       {/* root comment form */}
-      <form style={{ display: "flex" }} onSubmit={handleSubmit}>
+      <form style={{ display: "flex", marginTop: "3rem"}} onSubmit={handleSubmit}>
         <textarea
           style={{ width: "100%", borderRadius: "5px" }}
           onChange={handleChange}
