@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Comment, Avatar, Button, Input } from "antd";
+import { Comment, Avatar, Input } from "antd";
 import axios from "axios";
 import { useSelector } from 'react-redux';
 import LikeDisLike from './LikeDisLike';
@@ -74,9 +74,9 @@ const SingleComment = ({ videoId, comment, refreshComments }) => {
             value={commentValue}
             placeholder="Enter comment..."
           />
-          <Button style={{ width: "20%" }} type="submit">
+          <button style={{ width: "20%" }} type="submit">
             Submit
-          </Button>
+          </button>
         </form>
       )}
     </div>
