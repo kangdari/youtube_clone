@@ -4,6 +4,7 @@ import axios from "axios";
 import SideVideo from "./SideVideo";
 import Subscribe from "./Subscribe";
 import Comment from "./Comment";
+import LikeDisLike from './LikeDisLike';
 import { useSelector } from 'react-redux';
 
 const VideoDetailPage = ({ match }) => {
@@ -61,9 +62,8 @@ const VideoDetailPage = ({ match }) => {
 
             {/* user 정보 */}
             <List.Item
-              // 좋아요 싫어요
-              // userTo: 해당 비디오 작성자의 id 값을 props로 전달
-              actions={[subscribeButton]}
+              // video 관련 - 좋아요 싫어요
+              actions={[ <LikeDisLike video userId={auth._id} videoId={videoId} />, subscribeButton]}
             >
               <List.Item.Meta
                 // writer.image 필요

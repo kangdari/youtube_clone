@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Comment, Avatar, Button, Input } from "antd";
 import axios from "axios";
 import { useSelector } from 'react-redux';
+import LikeDisLike from './LikeDisLike';
 
 const { TextArea } = Input;
 
@@ -48,6 +49,8 @@ const SingleComment = ({ videoId, comment, refreshComments }) => {
   };
 
   const actions = [
+    // 좋아요 싫어요
+    <LikeDisLike comment commentId={comment._id} userId={auth._id} /> ,
     <span onClick={openReply} key="comment-basic-reply-to">
       Reply to
     </span>
