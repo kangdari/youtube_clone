@@ -74,9 +74,9 @@ const SingleComment = ({ videoId, comment, refreshComments }) => {
             value={commentValue}
             placeholder="Enter comment..."
           />
-          <button style={{ width: "20%" }} type="submit">
+          <Button style={{ width: "20%" }} type="submit">
             Submit
-          </button>
+          </Button>
         </form>
       )}
     </div>
